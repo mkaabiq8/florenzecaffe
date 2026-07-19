@@ -6,27 +6,81 @@ import SectionHeading from "./SectionHeading";
 
 const tiles = [
   {
-    src: "/images/interior.webp",
-    alt: "The lounge at Florenze Caffè",
-    caption: "The lounge",
+    src: "/images/winter-garden.webp",
+    alt: "The indoor winter garden at Florenze Caffè",
+    caption: "The winter garden",
     span: "sm:col-span-2 sm:row-span-2",
+  },
+  {
+    src: "/images/library.webp",
+    alt: "The library corner with floor-to-ceiling bookshelves",
+    caption: "The library",
+    span: "sm:row-span-2",
+  },
+  {
+    src: "/images/counter.webp",
+    alt: "The counter with fresh pastries and ice cream",
+    caption: "The counter",
+    span: "",
+  },
+  {
+    src: "/images/long-table.webp",
+    alt: "The long communal table with fresh flowers",
+    caption: "The long table",
+    span: "sm:col-span-2",
+  },
+  {
+    src: "/images/mezzanine.webp",
+    alt: "Evening view over the lounge from the mezzanine",
+    caption: "From the mezzanine",
+    span: "sm:col-span-2 sm:row-span-2",
+  },
+  {
+    src: "/images/piano-room.webp",
+    alt: "The piano room with exposed brick and fireplace",
+    caption: "The piano room",
+    span: "",
+  },
+  {
+    src: "/images/lounge-shelves.webp",
+    alt: "Chandeliers and curio shelves in the lounge",
+    caption: "The lounge",
+    span: "",
+  },
+  {
+    src: "/images/reading-room.webp",
+    alt: "The reading room with armchairs and lamplight",
+    caption: "The reading room",
+    span: "sm:col-span-2",
+  },
+  {
+    src: "/images/quiet-corner.webp",
+    alt: "A tufted sofa beside the brick wall and greenery",
+    caption: "A quiet corner",
+    span: "",
+  },
+  {
+    src: "/images/golden-hour.webp",
+    alt: "Afternoon light across the herringbone floor",
+    caption: "Golden hour",
+    span: "sm:col-span-2",
+  },
+  {
+    src: "/images/deli-counter.webp",
+    alt: "Fresh pastries, quiches and cold drinks on the deli counter",
+    caption: "Fresh daily",
+    span: "",
   },
   {
     src: "/images/sandwiches.webp",
     alt: "Fresh sandwiches and baguettes",
-    caption: "Made fresh daily",
+    caption: "Made every morning",
     span: "",
   },
   {
     src: "/images/icecream-display.webp",
     alt: "Papafilipou all-natural ice cream",
     caption: "All-natural ice cream",
-    span: "",
-  },
-  {
-    src: "/images/icecream-fridge.webp",
-    alt: "Ice cream cones and cups",
-    caption: "Cones & cups",
     span: "",
   },
 ];
@@ -36,14 +90,14 @@ export default function Gallery() {
     <section id="gallery" className="mx-auto max-w-6xl px-5 py-24 sm:py-32">
       <SectionHeading overline="A Look Inside" title="The Space" />
 
-      <div className="mt-14 grid auto-rows-[240px] grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mt-14 grid auto-rows-[230px] grid-cols-1 gap-4 sm:grid-flow-dense sm:grid-cols-3">
         {tiles.map((t, i) => (
           <motion.figure
             key={t.src}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: i * 0.08 }}
+            transition={{ duration: 0.6, delay: (i % 3) * 0.08 }}
             className={`group relative overflow-hidden ${t.span}`}
           >
             <Image
@@ -63,8 +117,8 @@ export default function Gallery() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, delay: 0.32 }}
-          className="group relative overflow-hidden sm:col-span-1"
+          transition={{ duration: 0.6, delay: 0.16 }}
+          className="group relative overflow-hidden"
         >
           <video
             src="/video/cafe-tour.mp4"

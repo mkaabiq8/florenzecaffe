@@ -59,7 +59,7 @@ export default function About() {
           <div className="absolute -inset-3 translate-x-5 translate-y-5 rounded-t-[12rem] border border-gold/40" />
           <div className="relative overflow-hidden rounded-t-[12rem] rounded-b-lg">
             <video
-              src="/video/cafe-short.mp4"
+              src="/video/koi.mp4"
               autoPlay
               muted
               loop
