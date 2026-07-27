@@ -1,8 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/lib/site";
+import { localeHref, nav as navDict, type Locale } from "@/lib/i18n";
 
-export default function Footer() {
+const copyright: Record<Locale, (year: number) => string> = {
+  en: (year) => `© ${year} Florenze Caffè · Nicosia, Cyprus`,
+  el: (year) => `© ${year} Florenze Caffè · Λευκωσία, Κύπρος`,
+};
+
+export default function Footer({ locale }: { locale: Locale }) {
+  const t = navDict[locale];
+
   return (
     <footer className="bg-roast text-cream">
       <div className="mx-auto max-w-6xl px-5 py-16">
@@ -15,21 +23,33 @@ export default function Footer() {
             className="h-14 w-auto opacity-90"
           />
           <p className="font-display text-lg italic text-cream/70">
-            {site.tagline}
+            {site.tagline[locale]}
           </p>
 
           <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-[0.7rem] font-medium uppercase tracking-[0.25em] text-cream/70">
-            <Link href="/#about" className="transition-colors hover:text-goldlight">
-              Our Story
+            <Link
+              href={`${localeHref(locale, "/")}#about`}
+              className="transition-colors hover:text-goldlight"
+            >
+              {t.story}
             </Link>
-            <Link href="/menu" className="transition-colors hover:text-goldlight">
-              Menu
+            <Link
+              href={localeHref(locale, "/menu")}
+              className="transition-colors hover:text-goldlight"
+            >
+              {t.menu}
             </Link>
-            <Link href="/#gallery" className="transition-colors hover:text-goldlight">
-              Gallery
+            <Link
+              href={`${localeHref(locale, "/")}#gallery`}
+              className="transition-colors hover:text-goldlight"
+            >
+              {t.gallery}
             </Link>
-            <Link href="/#visit" className="transition-colors hover:text-goldlight">
-              Visit Us
+            <Link
+              href={`${localeHref(locale, "/")}#visit`}
+              className="transition-colors hover:text-goldlight"
+            >
+              {t.visit}
             </Link>
             <a
               href={site.instagram}
@@ -50,7 +70,7 @@ export default function Footer() {
           </nav>
 
           <p className="text-xs font-light text-cream/50">
-            {site.address} ·{" "}
+            {site.address[locale]} ·{" "}
             <a href={site.phoneHref} className="hover:text-goldlight">
               {site.phone}
             </a>
@@ -58,7 +78,7 @@ export default function Footer() {
 
           <div className="mt-2 h-px w-24 bg-gold/40" />
           <p className="text-[0.65rem] uppercase tracking-[0.25em] text-cream/40">
-            © {new Date().getFullYear()} Florenze Caffè · Nicosia, Cyprus
+            {copyright[locale](new Date().getFullYear())}
           </p>
         </div>
       </div>

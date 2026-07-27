@@ -3,19 +3,68 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { site } from "@/lib/site";
+import { locales, localeHref, stripLocale, nav as navDict, ui, type Locale } from "@/lib/i18n";
 
-const links = [
-  { label: "Our Story", href: "/#about" },
-  { label: "Menu", href: "/menu" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Visit Us", href: "/#visit" },
+type NavLink = { key: "story" | "menu" | "gallery" | "visit"; href?: string; hash?: string };
+
+const links: NavLink[] = [
+  { key: "story", hash: "about" },
+  { key: "menu", href: "/menu" },
+  { key: "gallery", hash: "gallery" },
+  { key: "visit", hash: "visit" },
 ];
 
-export default function Nav({ solid = false }: { solid?: boolean }) {
+function LanguageSwitch({
+  locale,
+  dark,
+  size = "sm",
+}: {
+  locale: Locale;
+  dark: boolean;
+  size?: "sm" | "lg";
+}) {
+  const pathname = usePathname();
+  const contentPath = stripLocale(pathname);
+  const big = size === "lg";
+
+  return (
+    <div
+      className={`flex items-center ${big ? "gap-2 text-sm" : "gap-1.5 text-[0.7rem]"} font-medium uppercase tracking-[0.2em]`}
+    >
+      {locales.map((loc, i) => (
+        <span key={loc} className="flex items-center">
+          {i > 0 && (
+            <span className={`mx-1.5 ${dark ? "text-sand" : "text-cream/40"}`}>/</span>
+          )}
+          {loc === locale ? (
+            <span className={dark ? "text-gold" : "text-goldlight"} aria-current="true">
+              {ui[loc].languageName}
+            </span>
+          ) : (
+            <Link
+              href={localeHref(loc, contentPath)}
+              aria-label={ui[loc].switchToLabel}
+              className={`transition-colors ${
+                dark ? "text-cocoa hover:text-gold" : "text-cream/80 hover:text-goldlight"
+              }`}
+            >
+              {ui[loc].languageName}
+            </Link>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export default function Nav({ solid = false, locale }: { solid?: boolean; locale: Locale }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const t = navDict[locale];
+  const u = ui[locale];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -26,6 +75,11 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
 
   const dark = solid || scrolled;
 
+  const hrefFor = (link: NavLink) =>
+    link.href
+      ? localeHref(locale, link.href)
+      : `${localeHref(locale, "/")}#${link.hash}`;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
@@ -35,7 +89,7 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-        <Link href="/" className="shrink-0" aria-label="Florenze Caffè — home">
+        <Link href={localeHref(locale, "/")} className="shrink-0" aria-label={u.homeAria}>
           <Image
             src={dark ? "/images/logo.png" : "/images/logo-light.png"}
             alt="Florenze Caffè"
@@ -49,15 +103,16 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
         <nav className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
             <Link
-              key={l.href}
-              href={l.href}
+              key={l.key}
+              href={hrefFor(l)}
               className={`text-[0.72rem] font-medium uppercase tracking-[0.22em] transition-colors ${
                 dark ? "text-cocoa hover:text-gold" : "text-cream/90 hover:text-goldlight"
               }`}
             >
-              {l.label}
+              {t[l.key]}
             </Link>
           ))}
+          <LanguageSwitch locale={locale} dark={dark} />
           <a
             href={site.phoneHref}
             className={`border px-4 py-2 text-[0.72rem] font-medium uppercase tracking-[0.22em] transition-colors ${
@@ -73,7 +128,7 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
         <button
           className="md:hidden p-2"
           onClick={() => setOpen(true)}
-          aria-label="Open menu"
+          aria-label={u.openMenu}
         >
           <span
             className={`block h-px w-6 ${dark ? "bg-espresso" : "bg-cream"}`}
@@ -102,7 +157,7 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
               />
               <button
                 onClick={() => setOpen(false)}
-                aria-label="Close menu"
+                aria-label={u.closeMenu}
                 className="p-2 text-2xl leading-none"
               >
                 ×
@@ -111,17 +166,17 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
             <nav className="flex flex-1 flex-col items-center justify-center gap-8">
               {links.map((l, i) => (
                 <motion.div
-                  key={l.href}
+                  key={l.key}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08 * i + 0.1 }}
                 >
                   <Link
-                    href={l.href}
+                    href={hrefFor(l)}
                     onClick={() => setOpen(false)}
                     className="font-display text-3xl"
                   >
-                    {l.label}
+                    {t[l.key]}
                   </Link>
                 </motion.div>
               ))}
@@ -134,6 +189,13 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
               >
                 {site.phone}
               </motion.a>
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.58 }}
+              >
+                <LanguageSwitch locale={locale} dark={false} size="lg" />
+              </motion.div>
             </nav>
           </motion.div>
         )}
