@@ -125,18 +125,22 @@ export default function Nav({ solid = false, locale }: { solid?: boolean; locale
           </a>
         </nav>
 
-        <button
-          className="md:hidden p-2"
-          onClick={() => setOpen(true)}
-          aria-label={u.openMenu}
-        >
-          <span
-            className={`block h-px w-6 ${dark ? "bg-espresso" : "bg-cream"}`}
-          />
-          <span
-            className={`mt-2 block h-px w-6 ${dark ? "bg-espresso" : "bg-cream"}`}
-          />
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          <LanguageSwitch locale={locale} dark={dark} />
+
+          <button
+            className="p-2"
+            onClick={() => setOpen(true)}
+            aria-label={u.openMenu}
+          >
+            <span
+              className={`block h-px w-6 ${dark ? "bg-espresso" : "bg-cream"}`}
+            />
+            <span
+              className={`mt-2 block h-px w-6 ${dark ? "bg-espresso" : "bg-cream"}`}
+            />
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
