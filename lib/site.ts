@@ -2,6 +2,7 @@ import type { LocalizedText } from "./i18n";
 
 export const site = {
   name: "Florenze Caffè",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://florenzecaffe.com",
   phone: "+357 22 282000",
   phoneHref: "tel:+35722282000",
   rating: "4.3",

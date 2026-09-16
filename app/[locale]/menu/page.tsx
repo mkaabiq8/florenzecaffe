@@ -4,7 +4,8 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import { menu, type MenuItem, type MenuSection } from "@/lib/menu";
-import { defaultLocale, isLocale, ui, type Locale } from "@/lib/i18n";
+import { defaultLocale, isLocale, localeHref, ui, type Locale } from "@/lib/i18n";
+import { site } from "@/lib/site";
 
 const copy: Record<
   Locale,
@@ -60,8 +61,52 @@ export async function generateMetadata({
     title: c.title,
     description: c.description,
     alternates: {
-      languages: { en: "/menu", el: "/el/menu" },
+      canonical: localeHref(locale, "/menu"),
+      languages: {
+        en: "/menu",
+        el: "/el/menu",
+        "x-default": "/menu",
+      },
     },
+    openGraph: {
+      type: "website",
+      title: c.title,
+      description: c.description,
+      url: localeHref(locale, "/menu"),
+      images: ["/images/interior.webp"],
+      locale: locale === "el" ? "el_CY" : "en_US",
+    },
+  };
+}
+
+function menuJsonLd(locale: Locale) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Menu",
+    name: copy[locale].title,
+    url: `${site.url}${localeHref(locale, "/menu")}`,
+    inLanguage: locale,
+    hasMenuSection: menu.map((section) => ({
+      "@type": "MenuSection",
+      name: section.title[locale],
+      hasMenuItem: section.items.map((item) => {
+        const price = item.price ?? item.hot ?? item.small;
+        return {
+          "@type": "MenuItem",
+          name: item.name[locale],
+          ...(item.note ? { description: item.note[locale] } : {}),
+          ...(price
+            ? {
+                offers: {
+                  "@type": "Offer",
+                  price,
+                  priceCurrency: "EUR",
+                },
+              }
+            : {}),
+        };
+      }),
+    })),
   };
 }
 
@@ -173,6 +218,10 @@ export default async function MenuPage({
 
   return (
     <main className="bg-cream">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd(locale)) }}
+      />
       <Nav solid locale={locale} />
 
       <header className="mx-auto max-w-4xl px-5 pt-32 pb-10 text-center sm:pt-40">

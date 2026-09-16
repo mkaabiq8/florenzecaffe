@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import "../globals.css";
 import { defaultLocale, isLocale, locales, localeHref, type Locale } from "@/lib/i18n";
+import { site } from "@/lib/site";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -17,7 +18,7 @@ const jost = Jost({
 });
 
 // Set to the real domain once it is connected on Hostinger.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://florenzecaffe.com";
+const siteUrl = site.url;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -143,10 +144,13 @@ function jsonLdFor(locale: Locale) {
       opens: "07:00",
       closes: "22:00",
     },
-    sameAs: [
-      "https://www.instagram.com/florenze_caffe/",
-      "https://www.facebook.com/p/Florenze-Caffe-61580957969235/",
-    ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: site.rating,
+      reviewCount: site.reviewCount,
+    },
+    hasMenu: `${siteUrl}${localeHref(locale, "/menu")}`,
+    sameAs: [site.instagram, site.facebook],
   };
 }
 
