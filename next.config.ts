@@ -11,6 +11,20 @@ const nextConfig: NextConfig = {
     globalNotFound: true,
   },
 
+  async redirects() {
+    return [
+      {
+        // Consolidate to the apex domain (canonical URL everywhere in
+        // metadata/sitemap is https://florenzecaffe.com) so www and non-www
+        // aren't served as duplicate content.
+        source: "/:path*",
+        has: [{ type: "host", value: "www.florenzecaffe.com" }],
+        destination: "https://florenzecaffe.com/:path*",
+        statusCode: 301,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {

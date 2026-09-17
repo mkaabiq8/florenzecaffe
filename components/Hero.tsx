@@ -68,12 +68,12 @@ export default function Hero({ locale }: { locale: Locale }) {
           />
         </motion.div>
 
-        <motion.p
+        <motion.h1
           {...fade(0.45)}
           className="mt-8 max-w-xl font-display text-2xl italic text-cream/90 sm:text-3xl"
         >
           “{site.tagline[locale]}”
-        </motion.p>
+        </motion.h1>
 
         <motion.div
           {...fade(0.65)}
