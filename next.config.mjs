@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import("next").NextConfig} */
+const nextConfig = {
   experimental: {
     // "motion" ships hundreds of modules; only bundle what each
     // component actually imports instead of pulling in the whole package.
